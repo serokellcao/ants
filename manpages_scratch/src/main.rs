@@ -9,6 +9,7 @@ fn test_directions() {
   let p33 = Pos(3,3);
   let p22 = Pos(2,2);
   for dir in dir_iter() {
+    //              This call requires Pos to have Copy semantics vvv
     println!("{:<2} adj of (2, 2): {:?}", format!("{}", dir), adj(p22, dir));
     println!("{:<2} adj of (3, 3): {:?}", format!("{}", dir), adj(p33, dir));
   }

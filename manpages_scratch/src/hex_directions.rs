@@ -2,11 +2,8 @@ use std::fmt::Display;
 use num_traits::FromPrimitive;
 use num_derive::FromPrimitive;
 
-#[derive(Display)]
-#[derive(Debug)]
-#[derive(Clone)]
-#[derive(Copy)]
-#[derive(FromPrimitive)]
+#[derive(Debug, Clone, Copy)]
+#[derive(Display, FromPrimitive)]
 pub enum Dir {
   E = 0,
   SE = 1,
@@ -19,24 +16,20 @@ pub fn dir_iter() -> impl Iterator<Item=Dir> { /* TODO: make it into a generic f
   (0..6).map(|x| FromPrimitive::from_i8(x).unwrap())
 }
 
-#[derive(Display)]
-#[derive(Debug)]
-#[derive(Clone)]
-#[derive(Copy)]
-#[derive(FromPrimitive)]
+#[derive(Debug, Clone, Copy)]
+#[derive(Display, FromPrimitive)]
 pub enum LR {
   Left = 0,
   Right = 1,
 }
+/*
 pub fn lr_iter() -> impl Iterator<Item=LR> {
   (0..2).map(|x| FromPrimitive::from_i8(x).unwrap())
 }
+*/
 
-#[derive(Display)]
-#[derive(Debug)]
-#[derive(Clone)]
-#[derive(Copy)]
-#[derive(FromPrimitive)]
+#[derive(Debug, Clone, Copy)]
+#[derive(Display, FromPrimitive)]
 pub enum SenseDir {
   Here = 0,
   Ahead = 1,
@@ -73,9 +66,7 @@ pub fn sense_dir(cell : Pos, dir : Dir, sd : SenseDir) -> Pos {
   }
 }
 
-#[derive(Debug)]
-#[derive(Clone)]
-#[derive(Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct Pos(pub i32, pub i32);
 
 pub fn adj(Pos(x, y) : Pos, d : Dir) -> Pos {
