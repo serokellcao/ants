@@ -16,54 +16,8 @@ pub enum Dir {
   NE = 5,
 }
 
-#[derive(Debug)]
-pub struct WrappedDir(pub Option<Dir>);
-
-/*
-impl WrappedDir {
-  fn new() -> WrappedDir {
-    WrappedDir(None)
-  }
-}
-*/
-
-impl Iterator for WrappedDir {
-  type Item = Dir;
-
-  fn next(&mut self) -> Option<Dir> {
-
-    fn update_and_return(wd : &mut WrappedDir, dir : Option<Dir>) -> Option<Dir> {
-      match dir {
-        None => None,
-        Some(dir) => {
-          wd.0 = Some(dir);
-          Some(dir)
-        },
-      }
-    }
-
-    fn opt_dir_to_i8(d : Option<Dir>) -> i8 {
-      match d {
-        None    => -1,
-        Some(x) => x as i8,
-      }
-    }
-
-    fn i8_to_opt_dir(x : i8) -> Option<Dir> {
-      match FromPrimitive::from_i8(x) {
-        None => None,
-        y    => y,
-      }
-    }
-
-    let x = opt_dir_to_i8(self.0);
-    if Dir::NE as i8 == x {
-      None
-    } else {
-      update_and_return(self, i8_to_opt_dir(x + 1))
-    }
-
-  }
+pub fn dir_iter() -> impl Iterator<Item=Dir> {
+  (0..6).map(|x| FromPrimitive::from_i8(x).unwrap())
 }
 
 #[derive(Debug)]
