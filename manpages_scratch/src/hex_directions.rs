@@ -74,6 +74,8 @@ pub fn sense_dir(cell : Pos, dir : Dir, sd : SenseDir) -> Pos {
 }
 
 #[derive(Debug)]
+#[derive(Clone)]
+#[derive(Copy)]
 pub struct Pos(pub i32, pub i32);
 
 pub fn adj(Pos(x, y) : Pos, d : Dir) -> Pos {
