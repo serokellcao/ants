@@ -15,9 +15,62 @@ pub enum Dir {
   NW = 4,
   NE = 5,
 }
-
-pub fn dir_iter() -> impl Iterator<Item=Dir> {
+pub fn dir_iter() -> impl Iterator<Item=Dir> { /* TODO: make it into a generic funciton */
   (0..6).map(|x| FromPrimitive::from_i8(x).unwrap())
+}
+
+#[derive(Display)]
+#[derive(Debug)]
+#[derive(Clone)]
+#[derive(Copy)]
+#[derive(FromPrimitive)]
+pub enum LR {
+  Left = 0,
+  Right = 1,
+}
+pub fn lr_iter() -> impl Iterator<Item=LR> {
+  (0..2).map(|x| FromPrimitive::from_i8(x).unwrap())
+}
+
+#[derive(Display)]
+#[derive(Debug)]
+#[derive(Clone)]
+#[derive(Copy)]
+#[derive(FromPrimitive)]
+pub enum SenseDir {
+  Here = 0,
+  Ahead = 1,
+  LeftAhead = 2,
+  RightAhead = 3,
+}
+pub fn sense_dir_iter() -> impl Iterator<Item=SenseDir> {
+  (0..4).map(|x| FromPrimitive::from_i8(x).unwrap())
+}
+
+#[inline]
+pub fn turn(lr : LR, dir : Dir) -> Dir {
+  use LR::*;
+  match lr {
+    Left  => match FromPrimitive::from_i8((dir as i8 + 5) % 6) {
+      None => dir, // Will never execute, because we % 6!
+      Some(z) => z,
+    },
+    Right => match FromPrimitive::from_i8((dir as i8 + 1) % 6) {
+      None => dir,
+      Some(z) => z,
+    },
+  }
+}
+
+pub fn sense_dir(cell : Pos, dir : Dir, sd : SenseDir) -> Pos {
+  use LR::*;
+  use SenseDir::*;
+  match sd {
+    Here       => cell,
+    Ahead      => adj(cell, dir),
+    LeftAhead  => adj(cell, turn(Left, dir)),
+    RightAhead => adj(cell, turn(Right, dir)),
+  }
 }
 
 #[derive(Debug)]
