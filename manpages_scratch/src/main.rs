@@ -1,7 +1,8 @@
 use production::exports as prod;
 mod hex_directions;
 use hex_directions::*;
-//use hex_cartography::Pos;
+mod hex_cartography;
+use hex_cartography::*;
 
 #[macro_use]
 extern crate enum_display_derive;

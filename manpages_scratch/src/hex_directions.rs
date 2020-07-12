@@ -1,10 +1,7 @@
 use std::fmt::Display;
 use num_traits::FromPrimitive;
 use num_derive::FromPrimitive;
-//use hex_cartography::Pos;
-
-#[derive(Debug, Clone, Copy)]
-pub struct Pos(pub u8, pub u8);
+use crate::hex_cartography::*;
 
 #[derive(Debug, Clone, Copy)]
 #[derive(Display, FromPrimitive)]
