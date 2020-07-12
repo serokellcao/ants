@@ -45,11 +45,11 @@ pub fn turn(lr : LR, dir : Dir) -> Dir {
   use LR::*;
   match lr {
     Left  => match FromPrimitive::from_i8((dir as i8 + 5) % 6) {
-      None => dir, // Will never execute, because we % 6!
+      None => unreachable!(), // Will never execute, because we % 6!
       Some(z) => z,
     },
     Right => match FromPrimitive::from_i8((dir as i8 + 1) % 6) {
-      None => dir,
+      None => unreachable!(),
       Some(z) => z,
     },
   }
