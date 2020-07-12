@@ -1,6 +1,10 @@
 use std::fmt::Display;
 use num_traits::FromPrimitive;
 use num_derive::FromPrimitive;
+//use hex_cartography::Pos;
+
+#[derive(Debug, Clone, Copy)]
+pub struct Pos(pub u8, pub u8);
 
 #[derive(Debug, Clone, Copy)]
 #[derive(Display, FromPrimitive)]
@@ -66,9 +70,6 @@ pub fn sense_dir(cell : Pos, dir : Dir, sd : SenseDir) -> Pos {
   }
 }
 
-#[derive(Debug, Clone, Copy)]
-pub struct Pos(pub i32, pub i32);
-
 pub fn adj(Pos(x, y) : Pos, d : Dir) -> Pos {
   use Dir::*;
   match (d, even(y)) {
@@ -86,13 +87,19 @@ pub fn adj(Pos(x, y) : Pos, d : Dir) -> Pos {
 }
 
 #[inline]
-pub fn even(x : i32) -> bool {
-  x & 1 == 0
+pub fn even< I : From<u8> +
+                 std::ops::BitAnd<Output = I> +
+                 PartialEq >
+           (x : I) -> bool {
+  x & I::from(1) == I::from(0)
 }
 
 /*
 #[inline]
-pub fn odd(x : i32) -> bool {
-  x & 1 == 1
+pub fn odd< I : From<u8> +
+                std::ops::BitAnd<Output = I> +
+                PartialEq >
+           (x : I) -> bool {
+  x & I::from(1) == I::from(1)
 }
 */
