@@ -7,6 +7,15 @@ use hex_cartography::*;
 #[macro_use]
 extern crate enum_display_derive;
 
+fn test_map_cell() {
+  println!("Here are some map tokens:");
+  for token in map_tokens_iter() {
+    println!("{:?}", token);
+  }
+  println!("Here is the bijective mapping between enum and characters:");
+  println!("{:?}", map_tokens());
+}
+
 fn test_directions() {
   let p33 = Pos(3,3);
   let p22 = Pos(2,2);
@@ -29,4 +38,5 @@ fn test_directions() {
 fn main() {
   println!("{}, World!", prod::it_exports());
   test_directions();
+  test_map_cell();
 }

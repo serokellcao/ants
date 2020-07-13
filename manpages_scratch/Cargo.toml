@@ -11,3 +11,4 @@ production = { path = "../production" }
 enum-display-derive = "0.1.0"
 num-traits = "0.2"
 num-derive = "0.3"
+bimap = "0.4"
