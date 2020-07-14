@@ -1,16 +1,40 @@
 use bimap::BiMap;
 use quickcheck::{Arbitrary, Gen};
+use rand::prelude::*;
 
 #[derive(Debug, Clone, Copy)]
 #[derive(PartialEq, Eq)]
 pub struct Pos(pub i8, pub i8);
+impl Pos {
+  pub fn max() -> i8 {
+    100
+  }
+  pub fn is_valid(&self) -> bool {
+    self.0 >= 0 && self.1 >= 0 && self.0 <= Pos::max() && self.1 <= Pos::max()
+  }
+  pub fn is_inner(&self) -> bool {
+    self.0 > 0 && self.1 > 0 && self.0 < Pos::max() && self.1 < Pos::max()
+  }
+  pub fn new_maybe(x : i8, y : i8) -> Option<Pos> {
+    let p = Pos(x, y);
+    if p.is_valid() {
+      Some(p)
+    } else {
+      None
+    }
+  }
+}
 
 impl Arbitrary for Pos {
-  fn arbitrary<G: Gen>(g: &mut G) -> Pos {
-    Pos(
-      std::cmp::max(i8::arbitrary(g), 1),
-      std::cmp::max(i8::arbitrary(g), 1)
-    )
+  fn arbitrary<G : Gen>(g : &mut G) -> Pos {
+    let workaround_seed : u8 = random();
+    if workaround_seed % 21 == 20 {
+      Pos(i8::MAX, i8::MAX)
+    } else if workaround_seed % 21 == 1 {
+      Pos(i8::MIN, i8::MIN)
+    } else {
+      Pos(i8::arbitrary(g), i8::arbitrary(g))
+    }
   }
 }
 

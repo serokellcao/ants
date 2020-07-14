@@ -20,6 +20,7 @@ dependencies = [
  "production",
  "quickcheck",
  "quickcheck_macros",
+ "rand",
 ]
 
 [[package]]
