@@ -13,9 +13,12 @@ fn digit_to_char<I : From<u8> + ToString>(x : I) -> char {
 
 #[derive(Debug, Clone, Copy)]
 #[derive(PartialEq, Eq, Hash)]
+// TODO think about nomenclature to translate maps into world state more
+// directly.
 pub enum MapToken {
   Rock,
   Clear,
+  // TODO should be generalized as Home(Red | Black)
   RedHome,
   BlackHome,
   Food(u8),
@@ -43,4 +46,41 @@ pub fn map_tokens() -> BiMap<MapToken, char> {
     mts.insert(x.0, x.1);
   }
   mts
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn map_tokens_biject_onto_map_encoding_chars_as_specified() {
+    use MapToken::*;
+    /*
+    # rocky cell
+    . clear cell (containing nothing interesting)
+    + red anthill cell
+    - black anthill cell
+    1 to 9 clear cell containing the given number of food particles
+    */
+    let mt = map_tokens();
+    assert_eq!(mt.get_by_left(&Rock), Some(&'#'));
+    assert_eq!(mt.get_by_left(&Clear), Some(&'.'));
+    assert_eq!(mt.get_by_left(&RedHome), Some(&'+'));
+    assert_eq!(mt.get_by_left(&BlackHome), Some(&'-'));
+    for x in 0..10 {
+      assert_eq!(mt.get_by_left(&Food(x)), Some(&digit_to_char(x)));
+    }
+    for (x, y) in map_tokens_iter() {
+      assert_eq!(
+        &x,
+        mt.get_by_right(&mt.get_by_left(&x).unwrap()).
+          unwrap()
+      );
+      assert_eq!(
+        &y,
+        mt.get_by_left(&mt.get_by_right(&y).unwrap()).
+          unwrap()
+      );
+    }
+  }
 }
