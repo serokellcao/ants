@@ -74,7 +74,7 @@ pub fn adj(Pos(x, y) : Pos, d : Dir) -> Pos {
     (W, _)      => Pos(x - 1, y    ),
     (SE, true)  => Pos(x,     y + 1),
     (SE, false) => Pos(x + 1, y + 1),
-    (SW, true)  => Pos(x - 1, y    ),
+    (SW, true)  => Pos(x - 1, y + 1),
     (SW, false) => Pos(x,     y + 1),
     (NW, true)  => Pos(x - 1, y - 1),
     (NW, false) => Pos(x,     y - 1),
@@ -83,8 +83,15 @@ pub fn adj(Pos(x, y) : Pos, d : Dir) -> Pos {
   }
 }
 
+pub fn adj_result(p : Pos, d : Dir) -> Result<Pos, ()> {
+  match adj(p, d) {
+    x if x.0 < 0 || x.1 < 0 => Err(()),
+    x => Ok(x),
+  }
+}
+
 #[inline]
-pub fn even< I : From<u8> +
+pub fn even< I : From<i8> +
                  std::ops::BitAnd<Output = I> +
                  PartialEq >
            (x : I) -> bool {
@@ -93,10 +100,64 @@ pub fn even< I : From<u8> +
 
 /*
 #[inline]
-pub fn odd< I : From<u8> +
+pub fn odd< I : From<i8> +
                 std::ops::BitAnd<Output = I> +
                 PartialEq >
            (x : I) -> bool {
   x & I::from(1) == I::from(1)
 }
 */
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use crate::hex_cartography::Pos;
+
+  #[test]
+  fn directions_are_calculated_correctly_with_adj() {
+    use Dir::*;
+    let p11 = Pos(1,1);
+    let p22 = Pos(2,2);
+
+    /*
+
+      0,0    1,0    2,0    3,0
+
+         0,1    1,1    2,1    3,1
+
+      0,2    1,2    2,2    3,2
+
+         0,3    1,3    2,3    3,3
+
+    */
+
+    assert_eq!(adj(p22, E), Pos(3,2));
+    assert_eq!(adj(p22, SE), Pos(2,3));
+    assert_eq!(adj(p22, SW), Pos(1,3));
+    assert_eq!(adj(p22, W), Pos(1,2));
+    assert_eq!(adj(p22, NW), Pos(1,1));
+    assert_eq!(adj(p22, NE), Pos(2,1));
+
+    assert_eq!(adj(p11, E), Pos(2,1));
+    assert_eq!(adj(p11, SE), Pos(2,2));
+    assert_eq!(adj(p11, SW), Pos(1,2));
+    assert_eq!(adj(p11, W), Pos(0,1));
+    assert_eq!(adj(p11, NW), Pos(1,0));
+    assert_eq!(adj(p11, NE), Pos(2,0));
+
+  }
+
+  #[test]
+  fn directions_are_calculated_safely_with_adj_result() {
+    use Dir::*;
+    let p00 = Pos(0,0);
+
+    assert_eq!(adj_result(p00, SE), Ok(Pos(0,1)));
+    assert_eq!(adj_result(p00, E), Ok(Pos(1,0)));
+    assert_eq!(adj_result(p00, NE), Err(()));
+    assert_eq!(adj_result(p00, NW), Err(()));
+    assert_eq!(adj_result(p00, W), Err(()));
+    assert_eq!(adj_result(p00, SW), Err(()));
+  }
+
+}

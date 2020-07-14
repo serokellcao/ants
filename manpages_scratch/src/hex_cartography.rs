@@ -1,7 +1,8 @@
 use bimap::BiMap;
 
 #[derive(Debug, Clone, Copy)]
-pub struct Pos(pub u8, pub u8);
+#[derive(PartialEq, Eq)]
+pub struct Pos(pub i8, pub i8);
 
 fn digit_to_char<I : From<u8> + ToString>(x : I) -> char {
   let s = x.to_string();
