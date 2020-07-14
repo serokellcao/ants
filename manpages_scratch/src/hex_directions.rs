@@ -83,6 +83,7 @@ pub fn adj(Pos(x, y) : Pos, d : Dir) -> Pos {
   }
 }
 
+// TODO: should be aware of map boundaries!
 pub fn adj_result(p : Pos, d : Dir) -> Result<Pos, ()> {
   match adj(p, d) {
     x if x.0 < 0 || x.1 < 0 => Err(()),
@@ -111,11 +112,11 @@ pub fn odd< I : From<i8> +
 #[cfg(test)]
 mod tests {
   use super::*;
+  use Dir::*;
   use crate::hex_cartography::Pos;
 
   #[test]
   fn directions_are_calculated_correctly_with_adj() {
-    use Dir::*;
     let p11 = Pos(1,1);
     let p22 = Pos(2,2);
 
@@ -149,7 +150,6 @@ mod tests {
 
   #[test]
   fn directions_are_calculated_safely_with_adj_result() {
-    use Dir::*;
     let p00 = Pos(0,0);
 
     assert_eq!(adj_result(p00, SE), Ok(Pos(0,1)));
@@ -158,6 +158,38 @@ mod tests {
     assert_eq!(adj_result(p00, NW), Err(()));
     assert_eq!(adj_result(p00, W), Err(()));
     assert_eq!(adj_result(p00, SW), Err(()));
+  }
+
+  #[quickcheck]
+  fn south_and_north_adj_always_increase_and_decrease_y(p : Pos) -> bool {
+    let ne = adj(p, NE);
+    let se = adj(p, SE);
+    let nw = adj(p, NW);
+    let sw = adj(p, SW);
+
+    ne.1 == p.1 - 1 &&
+    nw.1 == p.1 - 1 &&
+    se.1 == p.1 + 1 &&
+    sw.1 == p.1 + 1
+  }
+
+  #[quickcheck]
+  fn east_and_west_adj_always_increase_and_decrease_x(p : Pos) -> bool {
+    adj(p, E).0 == p.0 + 1 &&
+    adj(p, W).0 == p.0 - 1
+  }
+
+  #[quickcheck]
+  fn east_adj_diagonals_and_west_adj_diagonals_at_most_preserve_x(p : Pos) -> bool {
+    let ne = adj(p, NE);
+    let se = adj(p, SE);
+    let nw = adj(p, NW);
+    let sw = adj(p, SW);
+
+    ne.0 == se.0 &&
+    nw.0 == sw.0 &&
+    (ne.0 == p.0 || ne.0 == p.0 + 1) &&
+    (nw.0 == p.0 || nw.0 == p.0 - 1)
   }
 
 }

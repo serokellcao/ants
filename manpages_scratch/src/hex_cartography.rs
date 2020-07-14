@@ -1,8 +1,18 @@
 use bimap::BiMap;
+use quickcheck::{Arbitrary, Gen};
 
 #[derive(Debug, Clone, Copy)]
 #[derive(PartialEq, Eq)]
 pub struct Pos(pub i8, pub i8);
+
+impl Arbitrary for Pos {
+  fn arbitrary<G: Gen>(g: &mut G) -> Pos {
+    Pos(
+      std::cmp::max(i8::arbitrary(g), 1),
+      std::cmp::max(i8::arbitrary(g), 1)
+    )
+  }
+}
 
 fn digit_to_char<I : From<u8> + ToString>(x : I) -> char {
   let s = x.to_string();
