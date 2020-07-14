@@ -1,11 +1,8 @@
-use production::exports as prod;
-mod hex_directions;
-use hex_directions::*;
-mod hex_cartography;
-use hex_cartography::*;
+extern crate ants;
 
-#[macro_use]
-extern crate enum_display_derive;
+use production::exports as prod;
+use ants::hex_directions::*;
+use ants::hex_cartography::*;
 
 fn test_map_cell() {
   println!("Here are some map tokens:");
