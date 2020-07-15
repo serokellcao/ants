@@ -6,12 +6,12 @@ use crate::hex_cartography::*;
 #[derive(Debug, Clone, Copy)]
 #[derive(Display, FromPrimitive)]
 pub enum Dir {
-  E = 0,
-  SE = 1,
-  SW = 2,
-  W = 3,
-  NW = 4,
-  NE = 5,
+  E,
+  SE,
+  SW,
+  W,
+  NW,
+  NE,
 }
 pub fn dir_iter() -> impl Iterator<Item=Dir> { /* TODO: make it into a generic funciton */
   (0..6).map(|x| FromPrimitive::from_i8(x).unwrap())
@@ -95,17 +95,23 @@ pub fn adj_maybe(p : Pos, d : Dir) -> Option<Pos> {
   }
 }
 
-#[inline]
-pub fn even< I : From<i8> +
+pub fn even< I : std::convert::TryFrom<i8> +
                  std::ops::BitAnd<Output = I> +
                  PartialEq >
            (x : I) -> bool {
-  x & I::from(1) == I::from(0)
+  let zero = I::try_from(0);
+  let one = I::try_from(1);
+  match zero {
+    Ok(zero) => match one {
+      Ok(one) => x & one == zero,
+      _ => unreachable!(),
+    },
+    _ => unreachable!(),
+  }
 }
 
 /*
-#[inline]
-pub fn odd< I : From<i8> +
+pub fn odd< I : Into<i8> +
                 std::ops::BitAnd<Output = I> +
                 PartialEq >
            (x : I) -> bool {
